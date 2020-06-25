@@ -77,7 +77,7 @@ namespace ProConEvents {
                 //Register all events
                 RegisterEvents(GetType().Name,
                     "OnListPlayers",
-                    "OnPlayerKilled",
+                    "OnPlayerKilled"
                     );
             } catch (Exception e) {
                 Log.Exception("FATAL ERROR on plugin load.", e);
@@ -161,14 +161,17 @@ namespace ProConEvents {
             if (kill.DamageType == Melee){
                 if(kill.Headshot == false){
                     Log.Debug($"{kill.Killer} just melee'd {kill.Victim}.", 7);
-                    
+                    Announce($"{kill.Killer} botched a field surgery on {kill.Victim}");
                 }
+                //as far as I know, this should never happen. In case it does, hilarity should insue.
                 else{
                     Log.Debug($"{kill.Killer} just melee'd {kill.Victim}. With a headshot?", 7);
+                    Announce($"{kill.Killer} botched a field brain surgery on {kill.Victim}");
                 }
             }
             if (kill.DamageType == SniperRifle && kill.Headshot && kill.Distance >= 1000){
                 Log.Debug($"{kill.Killer} just popped {kill.Victim}'s head off with a {kill.Distance}m shot!", 7);
+                Announce($"{kill.Killer} just removed {kill.Victim}'s head with a {kill.Distance}m snipe!");
             }
         }
     }
