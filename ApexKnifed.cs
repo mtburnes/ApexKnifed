@@ -83,7 +83,7 @@ namespace ProConEvents {
                 Log.Exception("FATAL ERROR on plugin load.", e);
             }
             Log.Debug("Exiting OnPluginLoaded", 7);
-
+        }
 
         public List<CPluginVariable> GetDisplayPluginVariables() {
 
@@ -108,6 +108,29 @@ namespace ProConEvents {
             }
         }
 
+        //Quick methods to do annoying things
+        
+        private void ConsoleWrite(string str)
+		{
+			ExecuteCommand("procon.protected.pluginconsole.write", str);
+		}
+
+        private void Announce(string Message)
+		{
+			if (GetState() == GState.BetweenRounds) return;
+			ExecuteCommand("procon.protected.send", "admin.yell", Message, AnnounceDisplayLength.ToString(), "all");
+			LogChat(Message);
+		}
+        private void LogChat(string Message)
+		{
+			ExecuteCommand("procon.protected.chat.write", Message);
+		}
+
+        /*
+        This function is used as some kind of interrupt that is ran whenever someone is killed. 
+        A kill on the server will trigger an event, which runs this function. OnPlayerKilled's sole parameter (AFAIK)
+        is a `Kill`, which has info regarding a particular player kill event.
+        */
         public override void OnPlayerKilled(Kill kill) {
             Log.Debug("Entering OnPlayerKilled", 7);
             try {
@@ -134,8 +157,19 @@ namespace ProConEvents {
                 } else {
                     return;
             }
-            if (kill.)
-
+            //If a player gets knifed...
+            if (kill.DamageType == Melee){
+                if(kill.Headshot == false){
+                    Log.Debug($"{kill.Killer} just melee'd {kill.Victim}.", 7);
+                    
+                }
+                else{
+                    Log.Debug($"{kill.Killer} just melee'd {kill.Victim}. With a headshot?", 7);
+                }
+            }
+            if (kill.DamageType == SniperRifle && kill.Headshot && kill.Distance >= 1000){
+                Log.Debug($"{kill.Killer} just popped {kill.Victim}'s head off with a {kill.Distance}m shot!", 7);
+            }
         }
     }
 }
